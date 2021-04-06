@@ -23,5 +23,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         
-      - name: Black Check
-        uses: jpetrucciani/black-check@20.8b1
+      - name: Check format with black
+        uses: piotrpawlaczek/python-blacken@release/stable
