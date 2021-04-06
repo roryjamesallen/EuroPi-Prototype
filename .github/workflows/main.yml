@@ -23,5 +23,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         
+      - name: Install black
+        run: pip install black
+        
       - name: Check format with black
-        uses: piotrpawlaczek/python-blacken@release/stable
+        run: black .
