@@ -100,4 +100,3 @@ def attack_release(
         pin.u_duty16(value)
         sleep(release_step)
         value -= 65025 / 100  # Subtracts the value instead of adding
-
