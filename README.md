@@ -4,7 +4,7 @@ The EuroPi is an open source project that integrates the new [Raspberry Pi Pico]
 
 All programs and code are available under the GNU General Public License v3.0. This is because I want all of my work to be available to anyone who would like to use it, modify it, and hopefully enjoy it. I have chosen this specific license because I want to ensure that this freedom of use will be granted to everyone in the future, and there is no risk of external profit motive reducing accessibility or driving up prices. 
 
-#The EuroPi Library
+# The EuroPi Library
 
 The EuroPi library is regularly updates, and contains many functions and variables which will make using the EuroPi easier.
 
