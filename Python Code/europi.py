@@ -55,16 +55,13 @@ class digital_pin:
 
 ####FUNCTIONS####        
 
-def strum(trigger_pin, pitch_pin, count, time, notes):
-    if len(notes) != count:
-        print("Error: Please make sure you have a note pitch per pluck")
-    else:
-        for pluck in range(0,count-1):
-            pitch_pin.value(notes[pluck])
-            trigger_pin.value(1)
-            sleep(time[0])
-            trigger_pin.value(0)
-            sleep(time[1])
+def strum(trigger_pin, pitch_pin, time, notes):
+    for note in notes:
+        pitch_pin.value(note)
+        trigger_pin.value(1)
+        sleep(time[0])
+        trigger_pin.value(0)
+        sleep(time[1])
             
             
 def create_scale(notes):
@@ -82,10 +79,7 @@ def create_scale(notes):
     return scale
 
 def random_chance(percentage):
-    if randint(0,100) < percentage:
-        return True
-    else:
-        return False
+    return randint(0,100) < percentage
           
           
 ####VARIABLES####
