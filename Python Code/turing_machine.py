@@ -61,6 +61,7 @@ while True:
     note += 1
     if note == sequence_length:
         note = 0
+        digital_4.trigger()
         
     sleep(clock)
 
