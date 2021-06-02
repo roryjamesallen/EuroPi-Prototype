@@ -10,63 +10,62 @@ knob_1 = ADC(Pin(27))
 button_1 = Pin(15, Pin.IN, Pin.PULL_UP)
 button_2 = Pin(18, Pin.IN, Pin.PULL_UP)
 digital_1 = Pin(21, Pin.OUT)
-digital_2  = Pin(22, Pin.OUT)
-digital_3  = Pin(19, Pin.OUT)
-digital_4  = Pin(20, Pin.OUT)
-analogue_1  = PWM(Pin(14, Pin.OUT))
-analogue_2  = PWM(Pin(11, Pin.OUT))
-analogue_3  = PWM(Pin(10, Pin.OUT))
-analogue_4  = PWM(Pin(7, Pin.OUT))
+digital_2 = Pin(22, Pin.OUT)
+digital_3 = Pin(19, Pin.OUT)
+digital_4 = Pin(20, Pin.OUT)
+analogue_1 = PWM(Pin(14, Pin.OUT))
+analogue_2 = PWM(Pin(11, Pin.OUT))
+analogue_3 = PWM(Pin(10, Pin.OUT))
+analogue_4 = PWM(Pin(7, Pin.OUT))
 
 
 ####CLASSES####
 
+
 class knob:
     def __init__(self, pin):
         self.pin = pin
-        
+
     def percent(self):
         return int(self.pin.read_u16() / 655.35)
-    
+
 
 class analogue_pin:
     def __init__(self, pin):
         self.pin = pin
-        
+
     def value(self, new_duty):
         self.pin.duty_u16(new_duty)
-        
+
     def randomise(self):
-        self.duty(randint(0,65034))
-        
+        self.duty(randint(0, 65034))
+
 
 class digital_pin:
     def __init__(self, pin):
         self.pin = pin
-        
+
     def trigger(self):
         self.pin.value(1)
         sleep(0.05)
         self.pin.value(0)
-        
+
     def value(self, value):
         self.pin.value(value)
-        
 
-####FUNCTIONS####        
 
-def strum(trigger_pin, pitch_pin, count, time, notes):
-    if len(notes) != count:
-        print("Error: Please make sure you have a note pitch per pluck")
-    else:
-        for pluck in range(0,count-1):
-            pitch_pin.value(notes[pluck])
-            trigger_pin.value(1)
-            sleep(time[0])
-            trigger_pin.value(0)
-            sleep(time[1])
-            
-            
+####FUNCTIONS####
+
+
+def strum(trigger_pin, pitch_pin, time, notes):
+    for note in notes:
+        pitch_pin.value(note)
+        trigger_pin.value(1)
+        sleep(time[0])
+        trigger_pin.value(0)
+        sleep(time[1])
+
+
 def create_scale(notes):
     global chromatic_step
     scale = []
@@ -81,21 +80,19 @@ def create_scale(notes):
             step = 1
     return scale
 
+
 def random_chance(percentage):
-    if randint(0,100) < percentage:
-        return True
-    else:
-        return False
-          
-          
+    return randint(0, 100) < percentage
+
+
 ####VARIABLES####
-    
+
 chromatic_step = 65536 / (12 * 3.3)
-            
-c_maj = create_scale([1,3,5,6,8,10,12])
-d_maj = create_scale([3,5,7,8,10,12])
-d_min = create_scale([3,5,6,8,10,11])
-jazz = create_scale([1,4,7,8,11])
+
+c_maj = create_scale([1, 3, 5, 6, 8, 10, 12])
+d_maj = create_scale([3, 5, 7, 8, 10, 12])
+d_min = create_scale([3, 5, 6, 8, 10, 11])
+jazz = create_scale([1, 4, 7, 8, 11])
 
 d_maj_bass = d_maj[0:8]
 d_min_bass = d_min[0:8]
@@ -117,7 +114,3 @@ if __name__ == "__main__":
     None
 else:
     None
-
-
-
-
