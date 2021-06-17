@@ -5,8 +5,8 @@ from time import sleep
 
 ####PINS####
 
-knob_2 = ADC(Pin(28))
-knob_1 = ADC(Pin(27))
+knob_1 = ADC(Pin(28))
+knob_2 = ADC(Pin(27))
 button_1 = Pin(15, Pin.IN, Pin.PULL_UP)
 button_2 = Pin(18, Pin.IN, Pin.PULL_UP)
 digital_1 = Pin(21, Pin.OUT)
@@ -122,6 +122,7 @@ if __name__ == "__main__":
     None
 else:
     None
+
 
 
 
