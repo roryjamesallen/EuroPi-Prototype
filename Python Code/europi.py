@@ -2,6 +2,8 @@ from machine import Pin, PWM, ADC
 from random import choice, randint
 from time import sleep
 
+UINT_16 = 65535  # Maximum unsigned 16 bit integer value.
+MAX_DUTY = 65025 # Max u16 value with offset.
 
 ####PINS####
 
@@ -21,44 +23,51 @@ analogue_4  = PWM(Pin(7, Pin.OUT))
 
 ####CLASSES####
 
-class knob:
+class Knob:
     def __init__(self, pin):
         self.pin = pin
-        
+
+    # Provide the relative percent value between 0 and 1.
     def percent(self):
-        return int(self.pin.read_u16() / 655.35)
-    
+        return int(self.value() / UINT_16)
+
+    # Provide the current value of the knob position between 0 and 65535 (max 16 bit int).
     def value(self):
         return(self.pin.read_u16())
 
-class analogue_pin:
+
+class AnaloguePin:
     def __init__(self, pin):
         self.pin = pin
-        
+
+    # Set the duty value to the given unsigned 16 bit int value.
     def value(self, new_duty):
         self.pin.duty_u16(new_duty)
-        
-    def randomise(self):
-        self.duty(randint(0,65034))
-        
 
-class digital_pin:
+    # Calling randomise will set the duty to a random value within the acceptable range.
+    def randomise(self):
+        self.duty(randint(0, MAX_DUTY))
+
+
+class DigitalPin:
     def __init__(self, pin):
         self.pin = pin
-        
-    def trigger(self):
-        self.pin.value(1)
-        sleep(0.05)
-        self.pin.value(0)
-        
-    def value(self, value):
+
+    def _value(self, value):
         self.pin.value(value)
-        
+
+    # Set the digital pin to HIGH for the optional duration (default to 5ms).
+    def trigger(self, sleep_duration=0.05):
+        self._value(1)
+        sleep(sleep_duration)
+        self._value(0)
+
+    # Invert the digital pin's current value.
     def toggle(self):
         self.pin.toggle()
-        
 
-####FUNCTIONS####        
+
+####FUNCTIONS####
 
 def strum(trigger_pin, pitch_pin, count, time, notes):
     if len(notes) != count:
@@ -66,12 +75,10 @@ def strum(trigger_pin, pitch_pin, count, time, notes):
     else:
         for pluck in range(0,count-1):
             pitch_pin.value(notes[pluck])
-            trigger_pin.value(1)
-            sleep(time[0])
-            trigger_pin.value(0)
+            trigger_pin.trigger(time[0])
             sleep(time[1])
-            
-            
+
+
 def create_scale(notes):
     global chromatic_step
     scale = []
@@ -87,16 +94,13 @@ def create_scale(notes):
     return scale
 
 def random_chance(percentage):
-    if randint(0,100) < percentage:
-        return True
-    else:
-        return False
-          
-          
+    return randint(0,100) < percentage
+
+
 ####VARIABLES####
-    
-chromatic_step = 65536 / (11.75 * 3.3)
-            
+
+chromatic_step = UINT_16 / (11.75 * 3.3)
+
 c_maj = create_scale([1,3,5,6,8,10,12])
 d_maj = create_scale([3,5,7,8,10,12])
 d_min = create_scale([3,5,6,8,10,11])
@@ -107,25 +111,13 @@ d_min_bass = d_min[0:8]
 c_maj_bass = c_maj[0:8]
 jazz_bass = jazz[0:8]
 
-analogue_1 = analogue_pin(analogue_1)
-analogue_2 = analogue_pin(analogue_2)
-analogue_3 = analogue_pin(analogue_3)
-analogue_4 = analogue_pin(analogue_4)
-digital_1 = digital_pin(digital_1)
-digital_2 = digital_pin(digital_2)
-digital_3 = digital_pin(digital_3)
-digital_4 = digital_pin(digital_4)
-knob_1 = knob(knob_1)
-knob_2 = knob(knob_2)
-
-if __name__ == "__main__":
-    None
-else:
-    None
-
-
-
-
-
-
-
+analogue_1 = AnaloguePin(analogue_1)
+analogue_2 = AnaloguePin(analogue_2)
+analogue_3 = AnaloguePin(analogue_3)
+analogue_4 = AnaloguePin(analogue_4)
+digital_1 = DigitalPin(digital_1)
+digital_2 = DigitalPin(digital_2)
+digital_3 = DigitalPin(digital_3)
+digital_4 = DigitalPin(digital_4)
+knob_1 = Knob(knob_1)
+knob_2 = Knob(knob_2)
