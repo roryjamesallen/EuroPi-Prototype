@@ -1,0 +1,30 @@
+from europi import *
+
+import time
+
+MIN_BPM = 20
+MAX_BPM = 280
+
+# Useful divisions: [1, 2, 3, 4, 5, 6, 7, 8, 12, 16]
+divisions = [1, 2, 4, 8]
+counter = 0
+
+# Main execution loop.
+while True:
+    # Set the clock speed via Knob 1.
+    # tempo range will be between 20 and 280 BPM.
+    # Knob 12 o'clock position is 150 BPM.
+    # TODO: add float precision for easier beat matching.
+    tempo = (knob_1.percent() * (MAX_BPM - MIN_BPM)) + MIN_BPM
+    time.sleep(60 / tempo)
+    
+    # Trigger the digital pin if it's divisible by the counter.
+    for i, pin in enumerate([digital_1, digital_2, digital_3, digital_4]):
+        if counter % divisions[1]:
+            pin.trigger()
+
+    # Wrap the counter if we've reached the largest division.
+    if counter == divisions[-1]:
+        counter = 1
+    else:
+        counter += 1
