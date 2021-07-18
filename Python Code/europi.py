@@ -29,11 +29,11 @@ class Knob:
 
     # Provide the relative percent value between 0 and 1.
     def percent(self):
-        return int(self.value() / UINT_16)
+        return self.value() / UINT_16
 
     # Provide the current value of the knob position between 0 and 65535 (max 16 bit int).
     def value(self):
-        return(self.pin.read_u16())
+        return self.pin.read_u16()
 
 
 class AnaloguePin:
@@ -121,3 +121,4 @@ digital_3 = DigitalPin(digital_3)
 digital_4 = DigitalPin(digital_4)
 knob_1 = Knob(knob_1)
 knob_2 = Knob(knob_2)
+
