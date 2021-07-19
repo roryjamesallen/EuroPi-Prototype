@@ -1,6 +1,16 @@
+"""
+EuroPi
+version: 1.1
+
+Module library for pin wrappers and common utility functions.
+https://github.com/roryjamesallen/EuroPi
+https://allensynthesis.co.uk/europi_assembly.html
+"""
+
 from machine import Pin, PWM, ADC
 from random import choice, randint
-from time import sleep
+from time import sleep, ticks_ms
+
 
 UINT_16 = 65535  # Maximum unsigned 16 bit integer value.
 MAX_DUTY = 65025 # Max u16 value with offset.
@@ -34,6 +44,31 @@ class Knob:
     # Provide the current value of the knob position between 0 and 65535 (max 16 bit int).
     def value(self):
         return self.pin.read_u16()
+
+
+class Button:
+    def __init__(self, pin, debounce_delay=500):
+        self.pin = pin
+        self.debounce_delay = debounce_delay
+        self.last_pressed = 0
+        self.debounce_done = True
+
+    def _debounce_check(self):
+        if (ticks_ms() - self.last_pressed) > self.debounce_delay:
+            self.debounce_done = True;
+
+    # Handler takes a callback func to call when this button is pressed.
+    def handler(self, func):
+        def bounce(func):
+            def wrap_bounce(*args, **kwargs):
+                self._debounce_check()
+                if self.debounce_done:
+                    self.last_pressed = ticks_ms()
+                    self.debounce_done = False
+                    func()
+            return wrap_bounce
+        self.pin.irq(trigger=Pin.IRQ_RISING, handler=bounce(func))
+
 
 
 class AnaloguePin:
@@ -121,4 +156,5 @@ digital_3 = DigitalPin(digital_3)
 digital_4 = DigitalPin(digital_4)
 knob_1 = Knob(knob_1)
 knob_2 = Knob(knob_2)
-
+button_1 = Button(button_1)
+button_2 = Button(button_2)
