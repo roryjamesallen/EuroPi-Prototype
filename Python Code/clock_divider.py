@@ -1,3 +1,17 @@
+"""
+Clock Divider
+author: awonak
+version: 1.0
+
+Provide 4 divisions of the master clock set by knob 1.
+
+knob_1: master clock tempo
+digital_1: first division, default master clock
+digital_2: second division, default /2
+digital_3: third division, default /4
+digital_4: fourth division, default /8
+
+"""
 from europi import *
 
 import time
