@@ -37,22 +37,16 @@ divisions = [1, 2, 4, 8]
 # Each digital output object.
 outputs = [digital_1, digital_2, digital_3, digital_4]
 
-config_index = -1
+selected_output = -1
+previous_choice = int(knob_2.percent() * len(division_choices) - 0.0001)
 
 
 def config_divisions():
-    global config_index
-    config_index = (config_index + 1) % len(divisions)
+    global selected_output
+    selected_output = (selected_output + 1) % len(divisions)
     if DEBUG:
-        print("New division config index: ", config_index)
+        print("New division config index: ", selected_output)
 button_2.handler(config_divisions)
-
-
-# Provide a list of pins to trigger in sync.
-def sync_trigger(pins):
-    [pin.value(1) for pin in pins]
-    time.sleep(0.05)
-    [pin.value(0) for pin in pins]
 
 
 # Start the main loop.
@@ -66,24 +60,26 @@ while True:
     time.sleep((60 / tempo) / 4)
 
     # Trigger the digital pin if it's divisible by the counter.
-    pins = []
     for i, pin in enumerate(outputs):
         if counter % divisions[i] == 0:
-            pins.append(pin)
-    sync_trigger(pins)
+            pin.value(1)
+    time.sleep(0.05)
+    [pin.value(0) for pin in outputs]
 
-    # Change the current config index digital pin to a division chosen by the
-    # current knob 2 value.
+    # Set the currently selected digital out's clock division to the value
+    # selected by knob 2.
     choice = int(knob_2.percent() * len(division_choices) - 0.0001)
-    if config_index >= 0 and division_choices[choice] != divisions[config_index]:
-        divisions[config_index] = division_choices[choice]
+    if selected_output >= 0 and choice != previous_choice:
+        divisions[selected_output] = division_choices[choice]
+        previous_choice = choice
 
         if DEBUG:
-            print("Change DJ{} division to: {}".format(config_index, division_choices[choice]))
+            msg = "Change DJ{} division to: {}"
+            print(msg.format(selected_output, division_choices[choice]))
 
     # Wrap the counter if we've reached the largest division.
     counter = (counter + 1) % MAX_DIVISION
 
     if DEBUG:
-        print("DJ: {}  || config:{}  tempo:{}".format(divisions, config_index, tempo))
-
+        msg = "DJ: {}  || config:{}  tempo:{}"
+        print(msg.format(divisions, selected_output, tempo))
