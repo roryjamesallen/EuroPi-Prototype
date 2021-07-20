@@ -1,14 +1,15 @@
 """
-EuroPi
+EuroPi Library
+author: roryjamesallen
 version: 1.1
 
-Module library for pin wrappers and common utility functions.
+EuroPi module library for pin wrappers and common utility functions.
 https://github.com/roryjamesallen/EuroPi
 https://allensynthesis.co.uk/europi_assembly.html
 """
 
 from machine import Pin, PWM, ADC
-from random import choice, randint
+from random import choice, random
 from time import sleep, ticks_ms
 
 
@@ -92,8 +93,8 @@ class DigitalJack:
     def value(self, value):
         self.pin.value(value)
 
-    # Set the digital pin to HIGH for the optional duration (default to 10ms).
-    def trigger(self, sleep_duration=0.01):
+    # Set the digital pin to HIGH for the optional duration (default to 50ms).
+    def trigger(self, sleep_duration=0.05):
         self.value(1)
         sleep(sleep_duration)
         self.value(0)
@@ -130,7 +131,7 @@ def create_scale(notes):
     return scale
 
 def random_chance(percentage):
-    return randint(0,100) < percentage
+    return random() < percentage
 
 
 ####VARIABLES####
