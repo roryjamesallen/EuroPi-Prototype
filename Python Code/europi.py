@@ -71,7 +71,7 @@ class Button:
 
 
 
-class AnaloguePin:
+class AnalogueJack:
     def __init__(self, pin):
         self.pin = pin
 
@@ -84,18 +84,19 @@ class AnaloguePin:
         self.duty(randint(0, MAX_DUTY))
 
 
-class DigitalPin:
+class DigitalJack:
     def __init__(self, pin):
         self.pin = pin
 
-    def _value(self, value):
+    # Set the digital pin to the given value, HIGH (1) or LOW (0).
+    def value(self, value):
         self.pin.value(value)
 
-    # Set the digital pin to HIGH for the optional duration (default to 5ms).
-    def trigger(self, sleep_duration=0.05):
-        self._value(1)
+    # Set the digital pin to HIGH for the optional duration (default to 10ms).
+    def trigger(self, sleep_duration=0.01):
+        self.value(1)
         sleep(sleep_duration)
-        self._value(0)
+        self.value(0)
 
     # Invert the digital pin's current value.
     def toggle(self):
@@ -146,14 +147,14 @@ d_min_bass = d_min[0:8]
 c_maj_bass = c_maj[0:8]
 jazz_bass = jazz[0:8]
 
-analogue_1 = AnaloguePin(analogue_1)
-analogue_2 = AnaloguePin(analogue_2)
-analogue_3 = AnaloguePin(analogue_3)
-analogue_4 = AnaloguePin(analogue_4)
-digital_1 = DigitalPin(digital_1)
-digital_2 = DigitalPin(digital_2)
-digital_3 = DigitalPin(digital_3)
-digital_4 = DigitalPin(digital_4)
+analogue_1 = AnalogueJack(analogue_1)
+analogue_2 = AnalogueJack(analogue_2)
+analogue_3 = AnalogueJack(analogue_3)
+analogue_4 = AnalogueJack(analogue_4)
+digital_1 = DigitalJack(digital_1)
+digital_2 = DigitalJack(digital_2)
+digital_3 = DigitalJack(digital_3)
+digital_4 = DigitalJack(digital_4)
 knob_1 = Knob(knob_1)
 knob_2 = Knob(knob_2)
 button_1 = Button(button_1)
