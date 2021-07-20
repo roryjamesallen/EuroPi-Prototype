@@ -9,14 +9,14 @@ Master tempo is set by knob 1, each analog output has a diffent cycle pattern
 and each digital output triggers a different rhythmic pattern based off the
 master clock.
 
-knob_1: master clock tempo
-button_1: reset arpeggio order back to first note in pattern and change scale.
-analog_1: notes in ascending order: 1 > 2 > 3
-analog_2: notes in descending order: 3 > 2 > 1
-analog_3: notes in asc & desc order: 1 > 2 > 3 > 2 > 1
-analog_4: notes in chord will be played randomly
-digital_1: master clock set by knob 1
-digital_2: cycle start
+knob_1: adjust master clock tempo
+button_1: reset arpeggio order back to first note in pattern and change scale
+analog_1: play notes in ascending order: 1 > 2 > 3
+analog_2: play notes in descending order: 3 > 2 > 1
+analog_3: play notes in asc & desc order: 1 > 2 > 3 > 3 > 2 > 1
+analog_4: play notes in chord will be played randomly
+digital_1: master clock trigger
+digital_2: trigger at cycle start
 """
 
 from europi import *
@@ -58,21 +58,21 @@ while True:
     analogue_3.value(bi)
     analogue_4.value(rnd)
 
-    pins = []
-    pins.append(digital_1)
+    digital_1.value(1)
 
     # Increment or reset counter. Trigger digital 2 on cycle restart.
     if counter+1 == CYCLE_LEN:
-        pins.append(digital_2)
+        digital_2.value(1)
         counter = 0
         forward = not forward
     else:
         counter += 1
 
-    # Trigger all eligible pins this cycle.
-    [pin.value(1) for pin in pins]
+    # Sleep for standard trigger duration and turn off all digital outs.
     time.sleep(0.05)
-    [pin.value(0) for pin in pins]
+    digital_1.value(0)
+    digital_2.value(0)
 
     if DEBUG:
-        print("{})1:{:>8}\t2:{:>8}\t3:{:>8}\t4:{:>8}\tchord:{:>4}\ttempo:{} ".format(counter, fwd, bwd, bi, rnd, chords.index(chord), tempo))
+        msg = "{})1:{:>8}\t2:{:>8}\t3:{:>8}\t4:{:>8}\tchord:{:>4}\ttempo:{}"
+        print(msg.format(counter, fwd, bwd, bi, rnd, chords.index(chord), tempo))
