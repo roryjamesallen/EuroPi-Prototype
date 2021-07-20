@@ -5,6 +5,13 @@ version: 1.1
 
 Play a sequence that changes notes within a scale according to the probability set by knob 2.
 
+Use knob 1 to adjust the master clock tempo. The second knob increases the
+probability that a note within the sequence will get changed on each step.
+The first two analogue jacks play a quantized pitch while the last two
+analogue jacks will play a random cv value. Digital 1 will trigger each step,
+while digital 2 plays a gate for the duration of the step. Digital 3 will
+trigger if a note is changed in the current step and digital 4 will trigger
+when the sequence restarts.
 
 knob_1: set master clock tempo
 knob_2: set new note chance
@@ -23,23 +30,19 @@ digital_4: sequence reset
 from europi import *
 from random import randint
 
-DEBUG = False
+# Constants
+DEBUG = False  # Print debug statements to the console during development
+SCALE = d_maj  # Set the scale used by the Turing Machine
+SEQUENCE_LENGTH = 8  # You can change this length, 8 is standard
 
-# Set the scale used by the Turing Machine
-SCALE = d_maj
-
-# The sequence starts off as an empty array
-sequence = []
-# You can change this length, 8 is standard
-sequence_length = 8
-# The index of the currently playing note in the sequence array
-note = 0
-# A boolean that locks whether new notes can be created
-lock = False
+# Variables
+sequence = []  # The sequence starts off as an empty array
+note = 0  # The index of the currently playing note in the sequence array
+lock = False  # A boolean that locks whether new notes can be created
 
 
 def push_new_note():
-    print("Interrupt Detected!")
+    if DEBUG: print("Interrupt Detected!")
     global sequence  # Gives access to the sequence so it can insert the new note
     sequence[note] = new_note  # Inserts a new note the same way it would happen naturally
     digital_3.value(1)  # Sets digital_3 high as this is the jack which indicates a new note has been created
@@ -47,7 +50,7 @@ button_1.handler(push_new_note)  # Assign the interrupt function created above t
 
 
 def push_lock():
-    print("Interrupt Detected!")
+    if DEBUG: print("Interrupt Detected!")
     global lock  # Gives access to the variable lock
     lock = not lock  # Switches lock from either True to False or False to True
 button_2.handler(push_lock)  # Assign the interrupt function created above to button 1
@@ -86,7 +89,7 @@ class TuringNote:
         sleep(0.05)  # For 0.05seconds, within the Eurorack standard length
         self.trigger_pin.value(0)  # The trigger pin is turned off
 
-        sleep(abs(self.length - 0.05))  # The note 'sleeps' for its length minus the trigger time which has already happened
+        sleep(abs(self.length - 0.05))  # The note 'sleeps' for the step length minus the trigger time which has already happened
         self.gate_pin.value(0)  # Finally the gate is turned off again
 
 
@@ -95,7 +98,7 @@ while True:  # The main program runs forever
     digital_4.value(0)  # The sequence has started again, so the reset indicator is turned off
 
     new_note = TuringNote(clock, digital_1, digital_2, analogue_1, analogue_2, analogue_3, analogue_4)  # A new note is created each time
-    if len(sequence) == sequence_length:  # The new note can only be swapped out if the sequence has reached its final length, so not for the first x steps
+    if len(sequence) == SEQUENCE_LENGTH:  # The new note can only be swapped out if the sequence has reached its final length, so not for the first x steps
         if random_chance(knob_2.percent()):  # The note is then dependent on the random chance controlled by knob 2
             if lock == False:  # And finally, only if the new note creation is not locked according to button 2
                 sequence[note] = new_note  # If all these conditions are met, the note is added to the sequence at the current location
@@ -107,7 +110,7 @@ while True:  # The main program runs forever
     digital_3.value(0)  # The jack to indicate a new note is turned off as the note is over
 
     note += 1  # The index for sequence is incremented to move on to the next note
-    if note == sequence_length:  # If the note is at the end of the sequence
+    if note == SEQUENCE_LENGTH:  # If the note is at the end of the sequence
         note = 0  # It is reset to the start
         digital_4.value(1)  # And the reset pin turned on to indicate this
 
@@ -115,4 +118,3 @@ while True:  # The main program runs forever
 
     if DEBUG:
         print("Seq: {} Clock: {}".format(sequence, clock))
-
