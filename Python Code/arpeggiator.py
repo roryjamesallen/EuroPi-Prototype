@@ -38,7 +38,9 @@ forward = True
 def reset_counter():
     global chord, counter
     counter = 0
-    chord = chords[(chords.index(chord)+1) % len(chords)]
+    chord = chords[(chords.index(chord) + 1) % len(chords)]
+
+
 button_1.handler(reset_counter)
 
 
@@ -49,7 +51,7 @@ while True:
 
     # Choose the frequency for each arp direction.
     fwd = chord[counter]
-    bwd = chord[0-counter-1]
+    bwd = chord[0 - counter - 1]
     bi = fwd if forward else bwd
     rnd = choice(chord)
 
@@ -61,7 +63,7 @@ while True:
     digital_1.value(1)
 
     # Increment or reset counter. Trigger digital 2 on cycle restart.
-    if counter+1 == CYCLE_LEN:
+    if counter + 1 == CYCLE_LEN:
         digital_2.value(1)
         counter = 0
         forward = not forward

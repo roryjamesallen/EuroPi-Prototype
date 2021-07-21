@@ -14,7 +14,7 @@ from time import sleep, ticks_ms
 
 
 UINT_16 = 65535  # Maximum unsigned 16 bit integer value.
-MAX_DUTY = 65025 # Max u16 value with offset.
+MAX_DUTY = 65025  # Max u16 value with offset.
 
 ####PINS####
 
@@ -23,16 +23,17 @@ knob_2 = ADC(Pin(27))
 button_1 = Pin(15, Pin.IN, Pin.PULL_UP)
 button_2 = Pin(18, Pin.IN, Pin.PULL_UP)
 digital_1 = Pin(21, Pin.OUT)
-digital_2  = Pin(22, Pin.OUT)
-digital_3  = Pin(19, Pin.OUT)
-digital_4  = Pin(20, Pin.OUT)
-analogue_1  = PWM(Pin(14, Pin.OUT))
-analogue_2  = PWM(Pin(11, Pin.OUT))
-analogue_3  = PWM(Pin(10, Pin.OUT))
-analogue_4  = PWM(Pin(7, Pin.OUT))
+digital_2 = Pin(22, Pin.OUT)
+digital_3 = Pin(19, Pin.OUT)
+digital_4 = Pin(20, Pin.OUT)
+analogue_1 = PWM(Pin(14, Pin.OUT))
+analogue_2 = PWM(Pin(11, Pin.OUT))
+analogue_3 = PWM(Pin(10, Pin.OUT))
+analogue_4 = PWM(Pin(7, Pin.OUT))
 
 
 ####CLASSES####
+
 
 class Knob:
     def __init__(self, pin):
@@ -56,7 +57,7 @@ class Button:
 
     def _debounce_check(self):
         if (ticks_ms() - self.last_pressed) > self.debounce_delay:
-            self.debounce_done = True;
+            self.debounce_done = True
 
     # Handler takes a callback func to call when this button is pressed.
     def handler(self, func):
@@ -67,9 +68,10 @@ class Button:
                     self.last_pressed = ticks_ms()
                     self.debounce_done = False
                     func()
-            return wrap_bounce
-        self.pin.irq(trigger=Pin.IRQ_RISING, handler=bounce(func))
 
+            return wrap_bounce
+
+        self.pin.irq(trigger=Pin.IRQ_RISING, handler=bounce(func))
 
 
 class AnalogueJack:
@@ -106,11 +108,12 @@ class DigitalJack:
 
 ####FUNCTIONS####
 
+
 def strum(trigger_pin, pitch_pin, count, time, notes):
     if len(notes) != count:
         print("Error: Please make sure you have a note pitch per pluck")
     else:
-        for pluck in range(0,count-1):
+        for pluck in range(0, count - 1):
             pitch_pin.value(notes[pluck])
             trigger_pin.trigger(time[0])
             sleep(time[1])
@@ -130,6 +133,7 @@ def create_scale(notes):
             step = 1
     return scale
 
+
 def random_chance(percentage):
     return random() < percentage
 
@@ -138,10 +142,10 @@ def random_chance(percentage):
 
 chromatic_step = UINT_16 / (11.75 * 3.3)
 
-c_maj = create_scale([1,3,5,6,8,10,12])
-d_maj = create_scale([3,5,7,8,10,12])
-d_min = create_scale([3,5,6,8,10,11])
-jazz = create_scale([1,4,7,8,11])
+c_maj = create_scale([1, 3, 5, 6, 8, 10, 12])
+d_maj = create_scale([3, 5, 7, 8, 10, 12])
+d_min = create_scale([3, 5, 6, 8, 10, 11])
+jazz = create_scale([1, 4, 7, 8, 11])
 
 d_maj_bass = d_maj[0:8]
 d_min_bass = d_min[0:8]

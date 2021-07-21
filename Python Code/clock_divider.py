@@ -47,6 +47,8 @@ def config_divisions():
     selected_output = (selected_output + 1) % len(divisions)
     if DEBUG:
         print("New division config index: ", selected_output)
+
+
 button_2.handler(config_divisions)
 
 
