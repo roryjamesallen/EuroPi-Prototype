@@ -22,6 +22,7 @@ knob_1 = ADC(Pin(28))
 knob_2 = ADC(Pin(27))
 button_1 = Pin(15, Pin.IN, Pin.PULL_UP)
 button_2 = Pin(18, Pin.IN, Pin.PULL_UP)
+digital_1 = Pin(21, Pin.OUT)
 digital_2  = Pin(22, Pin.OUT)
 digital_3  = Pin(19, Pin.OUT)
 digital_4  = Pin(20, Pin.OUT)
@@ -104,7 +105,7 @@ class DigitalJack:
     def toggle(self):
         self.pin.toggle()
 
-####FUNCTIONS####
+####FUNCTIONS####        
 
 def strum(trigger_pin, pitch_pin, count, time, notes):
     if len(notes) != count:
@@ -114,7 +115,8 @@ def strum(trigger_pin, pitch_pin, count, time, notes):
             pitch_pin.value(notes[pluck])
             trigger_pin.trigger(time[0])
             sleep(time[1])
-
+            
+            
 
 def create_scale(notes):
     scale = []
