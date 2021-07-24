@@ -9,7 +9,7 @@ https://allensynthesis.co.uk/europi_assembly.html
 """
 
 from machine import Pin, PWM, ADC
-from random import choice, random
+from random import random, randint
 from time import sleep, ticks_ms
 
 
@@ -122,12 +122,12 @@ def strum(trigger_pin, pitch_pin, count, time, notes):
 def create_scale(notes):
     global chromatic_step
     scale = []
-    note = 0
+    pitch = 0
     step = 1
-    while note < (chromatic_step * 36):
+    while pitch < (chromatic_step * 37):
         if step in notes:
-            scale.append(int(note))
-        note += chromatic_step
+            scale.append(int(pitch))
+        pitch += chromatic_step
         step += 1
         if step == 13:
             step = 1
