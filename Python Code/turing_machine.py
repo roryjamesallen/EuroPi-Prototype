@@ -28,7 +28,7 @@ digital_4: sequence reset
 """
 
 from europi import *
-from random import randint
+from random import randint, choice
 
 # Constants
 DEBUG = False  # Print debug statements to the console during development
@@ -41,19 +41,19 @@ note = 0  # The index of the currently playing note in the sequence array
 lock = False  # A boolean that locks whether new notes can be created
 
 
+@button_1.handler  # Assign the push_new_note function to button 1
 def push_new_note():
     if DEBUG: print("Interrupt Detected!")
     global sequence  # Gives access to the sequence so it can insert the new note
     sequence[note] = new_note  # Inserts a new note the same way it would happen naturally
     digital_3.value(1)  # Sets digital_3 high as this is the jack which indicates a new note has been created
-button_1.handler(push_new_note)  # Assign the interrupt function created above to button 1
 
 
+@button_2.handler  # Assign the push_lock function to button 2
 def push_lock():
     if DEBUG: print("Interrupt Detected!")
     global lock  # Gives access to the variable lock
     lock = not lock  # Switches lock from either True to False or False to True
-button_2.handler(push_lock)  # Assign the interrupt function created above to button 1
 
 
 class TuringNote:

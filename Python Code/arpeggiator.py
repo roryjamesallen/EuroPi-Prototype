@@ -26,7 +26,7 @@ from europi import *
 from random import choice
 import time
 
-DEBUG = True
+DEBUG = False
 MIN_BPM = 20
 MAX_BPM = 500
 OCTAVE_RANGE = 3  # EuroPi outputs max 3.3v so we only have a 3 octave range

@@ -42,14 +42,10 @@ previous_choice = int(knob_2.percent() * len(DIVISION_CHOICES) - 0.0001)
 counter = 1
 
 
+@button_2.handler
 def config_divisions():
     global selected_output
     selected_output = (selected_output + 1) % len(divisions)
-    if DEBUG:
-        print("New division config index: ", selected_output)
-
-
-button_2.handler(config_divisions)
 
 
 # Start the main loop.
@@ -57,7 +53,7 @@ while True:
     # Set the clock speed via Knob 1.
     # tempo range will be between 20 and 280 BPM.
     # Knob 12 o'clock position is 150 BPM.
-    tempo = (knob_1.percent() * (MAX_BPM - MIN_BPM)) + MIN_BPM
+    tempo = round((knob_1.percent() * (MAX_BPM - MIN_BPM)) + MIN_BPM, 1)
     # Sleep for a quarter note of the tempo.
     time.sleep((60 / tempo) / 4)
 
@@ -74,10 +70,6 @@ while True:
     if selected_output >= 0 and choice != previous_choice:
         divisions[selected_output] = DIVISION_CHOICES[choice]
         previous_choice = choice
-
-        if DEBUG:
-            msg = "Change DJ{} division to: {}"
-            print(msg.format(selected_output, DIVISION_CHOICES[choice]))
 
     # Wrap the counter if we've reached the largest division.
     counter = (counter + 1) % MAX_DIVISION
