@@ -87,7 +87,7 @@ scales = [
     Scale(create_scale([1, 4, 5, 6, 9]), False),  # Minor pentatonic
     Scale(create_scale(range(1, 12)), True),  # Chromatic scale
     Scale(create_scale([1]), True),  # Octave
-    Scale(create_scale([1, 12]), False),  # Octave + 11th
+    Scale(create_scale([1, 12]), False),  # Octave + 7th
 ]
 scale = scales[0]
 
