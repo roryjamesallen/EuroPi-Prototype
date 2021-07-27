@@ -1,33 +1,49 @@
+"""
+Turing Machine
+author: roryjamesallen
+version: 1.1
+
+Play a sequence that changes notes within a scale according to the probability set by knob 2.
+
+Use knob 1 to adjust the master clock tempo. The second knob increases the
+probability that a note within the sequence will get changed on each step.
+The first two analogue jacks play a quantized pitch while the last two
+analogue jacks will play a random cv value. Digital 1 will trigger each step,
+while digital 2 plays a gate for the duration of the step. Digital 3 will
+trigger if a note is changed in the current step and digital 4 will trigger
+when the sequence restarts.
+
+knob_1: set master clock tempo
+knob_2: set new note chance
+button_1: introduce a new note
+button_2: lock sequence
+analogue_1: 1V/Oct pitch or timbre control
+analogue_2: 1V/Oct pitch or timbre control
+analogue_3: random cv
+analogue_4: random cv
+digital_1: trigger
+digital_2: gate
+digital_3: note changed
+digital_4: sequence reset
+"""
 from europi import * #Required to be able to access the easy-use jacks, knobs, and buttons, without having to know the pin numbers
+from random import choice
 
-bounce_time = 0.5 #Minimum time between interrupts in seconds. If you having bouncing issues then increase this number
-bouncer = 0 #Time since last interrupt
 
-def int_handler_1(pin): #This controls what happens when the button 1 is pressed
-    global bouncer #Gives access to the variable bouncer to allow it to see if it can be triggered again
-    if bouncer > bounce_time: #Only if enough time has passed since last button press (set by bounce_time)
-        button_1.irq(handler=None)
-        print("Interrupt Detected!")
-        global sequence #Gives access to the sequence so it can insert the new note
-        sequence[note] = new_note #Inserts a new note the same way it would happen naturally
-        digital_3.value(1) #Sets digital_3 high as this is the jack which indicates a new note has been created
-        button_1.irq(handler=int_handler_1)
-        bouncer = 0 #Reset the bouncer variable (the time since last interrupt)
-button_1.irq(trigger=machine.Pin.IRQ_RISING, handler=int_handler_1) #Assign the interrupt function created above to button 1
+def push_new_note():
+    print("Interrupt Detected!")
+    global sequence  # Gives access to the sequence so it can insert the new note
+    sequence[note] = new_note  # Inserts a new note the same way it would happen naturally
+    digital_3.value(1)  # Sets digital_3 high as this is the jack which indicates a new note has been created
+button_1.handler(push_new_note)  # Assign the interrupt function created above to button 1
 
-def int_handler_2(pin): #The same button basics as for button 1
-    global bouncer
-    if bouncer > bounce_time:
-        button_2.irq(handler=None)
-        print("Interrupt Detected!")
-        global lock #Gives access to the variable lock
-        if lock == True: #Switches lock from either True to False or False to True
-            lock = False
-        else:
-            lock = True
-        button_2.irq(handler=int_handler_2)
-        bouncer = 0 #Reset the bouncer variable (the time since last interrupt)
-button_2.irq(trigger=machine.Pin.IRQ_RISING, handler=int_handler_2) #Assign the interrupt function created above to button 1
+
+def push_lock():
+    print("Interrupt Detected!")
+    global lock  # Gives access to the variable lock
+    lock = not lock  # Switches lock from either True to False or False to True
+button_2.handler(push_lock)  # Assign the interrupt function created above to button 1
+
 
 class TuringNote: #This object will contain the pins used for the note, and methods to allow the note to be played
     def __init__(self, clock, trigger_pin, gate_pin, pitch1_pin, pitch2_pin, timbre_pin): #The pins used by the note are passed in when it is created
@@ -55,8 +71,6 @@ class TuringNote: #This object will contain the pins used for the note, and meth
         self.trigger_pin.value(0) #The trigger pin is turned off
         
         sleep(abs(self.length - 0.05)) #The note 'sleeps' for its length minus the trigger time which has already happened
-        global bouncer
-        bouncer += abs(self.length - 0.05) #As the note slept for an amount of time, that time is added to the bouncer variable to tell the buttons they can be used again
         self.gate_pin.value(0) #Finally the gate is turned off again
         
         
@@ -65,7 +79,7 @@ sequence_length = 8 #You can change this length, 8 is standard
 note = 0 #The index of the currently playing note in the sequence array
 lock = False #A boolean that locks whether new notes can be created
 while True: #The main program runs forever
-    clock = (1 - (knob_1.percent() / 100)) + 0.01 #The clock calculation from knob 1. This gives you a time to sleep value between 0 seconds and 1 second. A very small value (0.01) is added to prevent it from breaking
+    clock = (1 - knob_1.percent()) + 0.01  # The clock calculation from knob 1. This gives you a time to sleep value between 0 seconds and 1 second. A very small value (0.01) is added to prevent it from breaking
     digital_4.value(0) #The sequence has started again, so the reset indicator is turned off
     
     new_note = TuringNote(clock, digital_1, digital_2, analogue_1, analogue_2, analogue_3) #A new note is created each time
@@ -87,4 +101,3 @@ while True: #The main program runs forever
         digital_4.value(1) #And the reset pin turned on to indicate this
         
     sleep(clock) #Finally, the time between notes is waited, as controlled by knob 1
-    bouncer += clock #And as time has passed, that time is added to the bouncer variable for the button controls
