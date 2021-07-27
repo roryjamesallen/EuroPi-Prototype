@@ -8,9 +8,9 @@ Likewise, the hardware is all available under the Creative Commons Sharealike 4.
 
 # The EuroPi Library
 
-The EuroPi library is regularly updates, and contains many functions and variables which will make using the EuroPi easier.
+The EuroPi library is regularly updated, and contains many functions and variables which will make using the EuroPi easier.
 
 These include:
 - Objects for each output jack, input button, and input knob
-- Methods for each output jack to set its value intuitively (.value() for both digital and analogue, digital taking 0/1, and analogue taking 0-65536)
+- Methods for each output jack to set its value intuitively (.value() for both digital and analogue, digital taking 0/1, and analogue taking 0-65535)
 - Simple but useful functions for conversions, such as returning the knob value in a percentage form, allowing easy use for random chance.
