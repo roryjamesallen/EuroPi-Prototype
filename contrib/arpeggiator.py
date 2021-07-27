@@ -66,9 +66,9 @@ class Scale:
     # Calculate the current note for each arpeggio pattern.
     def play(self) -> tuple(int):
         fwd = scale.notes[self.step]
-        bwd = scale.notes[0:len(self)][0 - self.step - 1]
+        bwd = scale.notes[0 : len(self)][0 - self.step - 1]
         bi = fwd if self.bi_forward else bwd
-        rnd = choice(scale.notes[0:len(self)])
+        rnd = choice(scale.notes[0 : len(self)])
         return fwd, bwd, bi, rnd
 
 
@@ -140,6 +140,7 @@ while scale.next_step():
     [pin.value(0) for pin in outputs]
 
     if DEBUG:
-        msg = "{:>2}) A[1:{:>6} 2:{:>6} 3:{:>6} 4:{:>6}] scale:{:>2} octaves:{:>2} tempo:{}"
-        print(msg.format(scale.step, fwd, bwd, bi, rnd,
-              scales.index(scale), octave_range, tempo))
+        msg = "{:>2}) A[1:{:>6} 2:{:>6} 3:{:>6} 4:{:>6}] scale:{:>2} octaves:{:>2} tempo:{}".format(
+            scale.step, fwd, bwd, bi, rnd, scales.index(scale), octave_range, tempo
+        )
+        print(msg)
