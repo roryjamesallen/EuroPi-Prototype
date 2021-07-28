@@ -35,8 +35,11 @@ OCTAVE_RANGE = 3  # EuroPi outputs max 3.3v so we only have a 3 octave range
 class Scale:
     """A series of notes in a scale and its sequence state."""
 
-    def __init__(self, notes: tuple(int), include_octave: bool) -> None:
-        self.notes = notes
+    def __init__(self, notes: tuple(int), include_octave: bool = False) -> None:
+        if include_octave:
+            self.notes = create_scale(notes, max_steps=37)
+        else:
+            self.notes = create_scale(notes)
         self.include_octave = include_octave
 
         self.step = 0
@@ -79,15 +82,15 @@ def get_octave_range() -> int:
 
 # Define the scales available.
 scales = [
-    Scale(create_scale([1, 3, 5, 6, 8, 10, 12]), True),  # Major scale
-    Scale(create_scale([1, 3, 4, 6, 8, 9, 11]), True),  # Minor scale
-    Scale(create_scale([1, 5, 8]), False),  # Major triad
-    Scale(create_scale([1, 4, 8]), False),  # Minor triad
-    Scale(create_scale([1, 3, 5, 6, 8]), False),  # Major pentatonic
-    Scale(create_scale([1, 4, 5, 6, 9]), False),  # Minor pentatonic
-    Scale(create_scale(range(1, 12)), True),  # Chromatic scale
-    Scale(create_scale([1]), True),  # Octave
-    Scale(create_scale([1, 12]), False),  # Octave + 7th
+    Scale([1, 3, 5, 6, 8, 10, 12], include_octave=True),  # Major scale
+    Scale([1, 3, 4, 6, 8, 9, 11], include_octave=True),  # Minor scale
+    Scale([1, 5, 8]),  # Major triad
+    Scale([1, 4, 8]),  # Minor triad
+    Scale([1, 3, 5, 6, 8]),  # Major pentatonic
+    Scale([1, 4, 5, 6, 9]),  # Minor pentatonic
+    Scale(range(1, 13), include_octave=True),  # Chromatic scale
+    Scale([1], include_octave=True),  # Octave
+    Scale([1, 12]),  # Octave + 7th
 ]
 scale = scales[0]
 

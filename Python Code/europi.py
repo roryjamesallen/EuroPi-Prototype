@@ -118,11 +118,11 @@ def strum(trigger_pin, pitch_pin, count, time, notes):
             
             
 
-def create_scale(notes):
+def create_scale(notes, max_steps=36):
     scale = []
     note = 0
     step = 1
-    while note < (chromatic_step * 36):
+    while note < (chromatic_step * max_steps):
         if step in notes:
             scale.append(int(note))
         note += chromatic_step
