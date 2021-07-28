@@ -119,6 +119,9 @@ def strum(trigger_pin, pitch_pin, count, time, notes):
             
 
 def create_scale(notes, max_steps=36):
+    if max_steps > 37:
+        print("More than 37 steps will exceed pico's 3.3V output")
+        return
     scale = []
     note = 0
     step = 1
