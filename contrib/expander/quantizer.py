@@ -1,5 +1,5 @@
-from europi import *
-from expander import *
+from europi import create_scale
+from expander import analog_in, analog_out, display, joystick
 
 
 class Scale:
@@ -39,30 +39,23 @@ def next_scale():
     scale = scales[(scales.index(scale) + 1) % len(scales)]
 
 
-def quantized_note(value: int, notes: tuple(int)) -> int:
-    """Return the nearest quantized note in a chromatic scale."""
+def quantized_note(value: float) -> int:
+    """Return the nearest quantized note in the given scale for the given."""
+    index = int((value - 0.0001) * len(scale.notes))
+    return scale.notes[index]
 
-    def search(start, end):
-        if start + 1 == end:
-            return notes[start]
 
-        pivot = int(((end - start) / 2) + start)
+def show(scale: tuple(int), value: int, note: int):
+    display.oled.fill(0)
+    display.oled.text("Scale:", 0, 0)
+    display.oled.text(scale.name, 0, 12)
+    display.oled.text("V in: {}".format(value), 0, 40)
+    display.oled.text("Step: {}".format(scale.get_step(note)), 0, 52)
+    display.oled.show()
 
-        if value < notes[pivot]:
-            return search(start, pivot)
-        else:
-            return search(pivot, end)
-
-    return search(0, len(notes))
 
 while True:
-    value = analog_in.value()
-    note = quantized_note(value, scale.notes)
+    value = analog_in.percent()
+    note = quantized_note(value)
     analog_out.value(note)
-
-    oled.fill(0)
-    oled.text("Scale:", 0, 0)
-    oled.text(scale.name, 0, 12)
-    oled.text("V in: {}".format(value), 0, 40)
-    oled.text("Step: {}".format(scale.get_step(note)), 0, 52)
-    oled.show()
+    show(scale, value, note)

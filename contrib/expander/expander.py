@@ -1,13 +1,16 @@
-from europi import AnalogueJack, DigitalJack, Button, UINT_16, create_scale
+from europi import AnalogueJack, DigitalJack, Button, UINT_16
 from machine import ADC, I2C, Pin, PWM
 from ssd1306 import SSD1306_I2C
-from time import sleep
+
+
+# OLED size constants
+WIDTH = 128
+HEIGHT = 64
 
 
 class AnalogInput:
     def __init__(self, pin: Pin):
         self.pin = ADC(pin)
-        self.scale = create_scale(range(1,13), 37)
 
     def value(self) -> int:
         """Read the received voltage as uint16 value between 0 and 65535."""
@@ -19,32 +22,39 @@ class AnalogInput:
 
 
 class DigitalInput:
-    def __init__(self, pin):
+    def __init__(self, pin: Pin):
         self.pin = pin
 
-    def value(self):
+    def value(self) -> int:
         """Read the digital pin, HIGH (1) or LOW (0)."""
         self.pin.value()
 
 
+# OLED Display
+class Display:
+    def __init__(self, sda: Pin, scl: Pin, freq: int = 400000):
+        self.i2c = I2C(0, sda=sda, scl=scl, freq=freq)
+        if len(self.i2c.scan()) == 0:
+            print("No I2C devices found!")
+            return
+
+        self.oled = SSD1306_I2C(WIDTH, HEIGHT, self.i2c)
+
+
 # Joystick and button
 class Joystick:
-    def __init__(self):
-        self._x = ADC(Pin(27))
-        self._y = ADC(Pin(28))
-        self._sw = Button(Pin(22,Pin.IN, Pin.PULL_UP))
+    def __init__(self, pin_x: Pin, pin_y: Pin, pin_button: Pin):
+        self._x = ADC(pin_x)
+        self._y = ADC(pin_y)
+        self._sw = Button(pin_button)
 
     @property
-    def x(self): 
+    def x(self) -> int: 
         return self._x.read_u16()
 
     @property
-    def y(self): 
+    def y(self) -> int: 
         return self._y.read_u16()
-
-    @property
-    def sw(self): 
-        return self._sw.value()
     
     def button_handler(self, func):
         self._sw.handler(func)
@@ -55,13 +65,11 @@ analog_in = AnalogInput(Pin(26))
 digital_in = DigitalInput(Pin(2, Pin.IN, Pin.PULL_DOWN))
 
 # OLED display
-i2c = I2C(0, sda=Pin(20), scl=Pin(21), freq=400000)
-oled = SSD1306_I2C(128, 64, i2c)
+display = Display(Pin(20), Pin(21))
 
 # Joystick input
-joystick = Joystick()
+joystick = Joystick(Pin(27), Pin(28), Pin(22, Pin.IN, Pin.PULL_UP))
 
 # Analog & Digital output jacks
 analog_out = AnalogueJack(PWM(Pin(18, Pin.OUT)))
 digital_out = DigitalJack(Pin(19, Pin.OUT))
-
