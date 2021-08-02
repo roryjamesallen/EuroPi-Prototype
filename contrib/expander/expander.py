@@ -27,7 +27,7 @@ class DigitalInput:
 
     def value(self) -> int:
         """Read the digital pin, HIGH (1) or LOW (0)."""
-        self.pin.value()
+        return self.pin.value()
 
 
 # OLED Display
