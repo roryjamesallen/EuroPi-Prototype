@@ -10,7 +10,10 @@ Currently a rough draft prototype. I intend to play with this a bit and see what
 
 Gallery: https://imgur.com/gallery/wUu3WKc
 
-Demo Video: https://imgur.com/gallery/GkURZF7 
+Demo Videos: 
+
+ * Quantizer - https://imgur.com/gallery/GkURZF7 
+ * Clock Divider - https://imgur.com/gallery/1vz1VOi
 
 ## Dependencies:
 EuroPi library [https://github.com/roryjamesallen/EuroPi](https://github.com/roryjamesallen/EuroPi/blob/main/Python%20Code/europi.py)
