@@ -8,13 +8,17 @@ class Scale:
     def __init__(self, name: str, steps: tuple(int)):
         self.name = name
         self.steps = steps
-        self.notes = create_scale(steps)
+        self.notes = create_scale(steps, 37)
     
-    def get_step(self, note: int) -> str:
+    def get_step(self, note: int) -> int:
         if note == 0:
             return self.steps[0]
         n = self.notes.index(note) % len(self.steps)
         return self.steps[n-1]
+
+    def get_octave(self, note: int) -> int:
+        octaves = len(self.notes) / 3
+        return int((self.notes.index(note) - 0.1) / octaves) + 1
 
 
 # Define the scales available.
@@ -51,6 +55,8 @@ def show(scale: tuple(int), value: int, note: int):
     display.oled.text(scale.name, 0, 12)
     display.oled.text("V in: {}".format(value), 0, 40)
     display.oled.text("Step: {}".format(scale.get_step(note)), 0, 52)
+    display.oled.text("Oct: {}".format(scale.get_octave(note)), 72, 52)
+    
     display.oled.show()
 
 
