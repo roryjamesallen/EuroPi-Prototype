@@ -1,7 +1,7 @@
 from machine import Pin, UART
 from ustruct import unpack
 from utime import sleep_ms
-from expander import display, digital_in, digital_out
+from lib.expander import display, digital_in, digital_out
 from collections import namedtuple
 
 
@@ -13,6 +13,11 @@ led = Pin(25, Pin.OUT)
 # Divisions state struct.
 State = namedtuple("State", "selected_output d1 d2 d3 d4")
 format_string = "5b"
+
+
+def display_header():  
+    display.oled.text("Clock Divisions:", 0, 0)
+    display.oled.show()
 
 
 def display_handler(state):  
@@ -31,6 +36,7 @@ def display_handler(state):
 def ready():
     led.off()
     display.oled.fill(0)
+    display_header()
     # Flush the uart message buffer.
     for i in range(4):
         while uart1.any():
@@ -54,5 +60,5 @@ while True:
             state = State(*unpack(format_string, uart1.read()))
         except:
             # Ignore any uart message that is not a division state message.
-            pass
+            continue
         display_handler(state)
