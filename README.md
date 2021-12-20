@@ -1,6 +1,9 @@
+#### NOTICE: This is a deprecated repository. It still contains accurate information for the original designs, however the new (much improved) version of the concept can now be found at the [EuroPi repository](https://github.com/Allen-Synthesis/EuroPi)
+  
+  
 # EuroPi
 
-The EuroPi is an open source project that integrates the new [Raspberry Pi Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/) into a eurorack module. Further details can be found in the [wiki](https://github.com/roryjamesallen/EuroPi/wiki).
+The EuroPi is an open source project that integrates the new [Raspberry Pi Pico](https://www.raspberrypi.org/products/raspberry-pi-pico/) into a eurorack module.
 
 All programs and code are available under the GNU General Public License v3.0. This is because I want all of my work to be available to anyone who would like to use it, modify it, and hopefully enjoy it. I have chosen this specific license because I want to ensure that this freedom of use will be granted to everyone in the future, and there is no risk of external profit motive reducing accessibility or driving up prices. 
 
